@@ -6,6 +6,8 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Camera;
+import android.graphics.Matrix;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -32,9 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private final String CARPETA_RAIZ="Imagener/";
     private final String RUTA_IMAGEN=CARPETA_RAIZ+"ReadBusinness";
 
-    final int COD_SELECCIONA=10;
     final int COD_FOTO=20;
-    Button boton_1,boton_2;
+    Button boton_1;
     ImageView image_result;
     String path;
     boolean existe;
@@ -44,17 +45,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         boton_1 = findViewById(R.id.b_take);
         image_result = findViewById(R.id.image_result);
-        boton_2 = findViewById(R.id.b_accept);
         if(validaPermisos()){
             boton_1.setEnabled(true);
         }else{
             boton_1.setEnabled(false);
         }
-        boton_2.setEnabled(false);
 
     }
     @Override
@@ -75,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode==RESULT_OK) {
+
             existe = true;
             MediaScannerConnection.scanFile(this, new String[]{path}, null,
                     new MediaScannerConnection.OnScanCompletedListener() {
@@ -83,19 +83,16 @@ public class MainActivity extends AppCompatActivity {
                             Log.i("Ruta de almacenamiento", "Path: " + path);
                         }
                     });
-            boton_2.setEnabled(true);
             bitmap = BitmapFactory.decodeFile(path);
             image_result.setImageBitmap(bitmap);
+            boton_1.setText(R.string.otherpicture);
+            aceptar();
         }
     }
 
 
     private boolean validaPermisos() {
-
-        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.M){
-            return true;
-        }
-
+        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.M){ return true; }
         if((checkSelfPermission(CAMERA)== PackageManager.PERMISSION_GRANTED)&&
                 (checkSelfPermission(WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED)){
             return true;
@@ -150,10 +147,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void take_photo(View view) {hacerFoto(); }
-    public void accept(View view) {aceptar();}
 
     private void hacerFoto() {
-        boton_1.setText(R.string.otherpicture);
         File fileImagen=new File(Environment.getExternalStorageDirectory(),RUTA_IMAGEN);
         boolean isCreada=fileImagen.exists();
         String nombreImagen="";
@@ -164,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
             nombreImagen=(System.currentTimeMillis()/1000)+".jpg";
         }
 
-
         path= Environment.getExternalStorageDirectory()+
                 File.separator+RUTA_IMAGEN+File.separator+nombreImagen;
 
@@ -172,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent=null;
         intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        ////
+
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N)
         {
             String authorities=getApplicationContext().getPackageName()+".provider";
@@ -183,7 +177,9 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imagen));
         }
         startActivityForResult(intent,COD_FOTO);
+
     }
+
 
     private void aceptar() {
         startActivity(new Intent(this,Result_ORC.class));

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">ReadBusinessCard</string>
     <string name="otherpicture">Take other picture</string>
+    <string name="no_text_detected">No text detected</string>
+    <string name="accept">ACCEPT</string>
+    <string name="take_the_photo">Take the photo</string>
 </resources>
