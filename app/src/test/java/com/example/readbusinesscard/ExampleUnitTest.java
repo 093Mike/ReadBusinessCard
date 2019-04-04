@@ -28,13 +28,7 @@ public class ExampleUnitTest {
         assertEquals(false, m.isEmail_1("M:"));
         assertEquals(false, m.isEmail_2("Mail:"));
     }
-    @Test
-    public void isMail_Tests(){
-        assertEquals(false, m.isMail_1("E:"));
-        assertEquals(false, m.isMail_2("Email:"));
-        assertEquals(true, m.isMail_1("M:"));
-        assertEquals(true, m.isMail_2("Mail:"));
-    }
+
     @Test
     public void isNumber(){
         assertEquals(false, p.isNumber("E:"));
@@ -44,8 +38,8 @@ public class ExampleUnitTest {
     public void isPhoneplusAndNumbers(){
         //2 numbers
         assertEquals(false, p.isPlusAnd2Numbers("E:"));
-        assertEquals(true, p.isPlusAnd2Numbers("+34"));
-        assertEquals(true, p.isPlusAnd3Numbers("+342"));
+        assertEquals(true, p.isPlusAnd2Numbers("+34 "));
+        assertEquals(true, p.isPlusAnd3Numbers("+342 "));
     }
     @Test
     public void isPhonPlusAndNumbers_enc(){

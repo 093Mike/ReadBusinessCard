@@ -21,10 +21,4 @@ public class Result_Web {
         return s.matches("[.][a-z][a-z][a-z]");
     }
 
-
-
-
-
-
-
 }
